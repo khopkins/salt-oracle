@@ -22,3 +22,7 @@ oracle_sw_only:
       - file: '{{ pillar['oracle_install_params']['oracle_base'] }}/oracle_sw_only.rsp'
     - unless: "file -f /opt/oracle/oraInventory/oraInst.loc"
 
+  file:
+    - append:
+    - name: '$HOME/.zshrc'
+    - ORACLE_HOME: {{ pillar['oracle_install_params']['oracle_home'] }}

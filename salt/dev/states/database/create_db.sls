@@ -4,7 +4,7 @@ include:
 oracle_create_db:
 
   file.managed:
-    - name: '/opt/oracle/dbca.rsp'
+    - name: '{{ pillar['oracle_install_params']['oracle_base'] }}/dbca.rsp'
     - source: salt://database/dbca.rsp
     - template: jinja
     - defaults:
@@ -13,12 +13,12 @@ oracle_create_db:
       oracle_base: '/opt/oracle'
       oracle_dba_group: 'dba'
       oracle_oper_group: 'dba'
-      gdbname: {{ grains['fqdn'] }}
-      dbname: {{ grains['localhost'] }}
+      gdbname: {{ pillar['oracle_install_params']['gdbname'] }}
+      dbname: {{ pillar['oracle_install_params']['dbname'] }} 
       sys_pwd: bobo
       system_pwd: bobo
-      datafile_dest: '/db/alpha_data01/{{ grains['localhost'] }}/'
-      recoveryarea_dest: '/db/alpha_flra01/{{ grains['localhost'] }}/'
+      datafile_dest: {{ pillar['oracle_install_params']['datafile_dest'] }} 
+      recoveryarea_dest: {{ pillar['oracle_install_params']['recoveryarea_dest'] }} 
       storage_type: 'FS'
       init_params:
       auto_memory_management: FALSE
@@ -28,5 +28,6 @@ oracle_create_db:
     - user: oracle
     - group: dba
     - require:
-      - file: '{{ pillar['oracle_install_params']['oracle_base'] }}/oracle_sw_only.rsp'
+      - file: '{{ pillar['oracle_install_params']['oracle_base'] }}/dbca.rsp'
+    - unless: 'test -f /etc/oratab'
 
